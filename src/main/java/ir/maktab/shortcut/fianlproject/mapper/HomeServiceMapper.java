@@ -11,4 +11,5 @@ public interface HomeServiceMapper {
     HomeServiceResponseDto toDto(HomeService homeService);
     HomeService toEntity(HomeServiceRequestDto dto);
     void updateEntityFromDto(HomeServiceRequestDto dto, @MappingTarget HomeService entity);
+   HomeServiceResponseDto toResponseDto(HomeService homeService);
 }

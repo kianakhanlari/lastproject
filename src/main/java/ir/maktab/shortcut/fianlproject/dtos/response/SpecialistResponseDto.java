@@ -9,9 +9,9 @@ import lombok.Setter;
 @AllArgsConstructor
 public class SpecialistResponseDto {
 
-    private String fullName;
+    private Long specialistId;
 
-    private String password;
+    private String fullName;
 
     private String email;
 

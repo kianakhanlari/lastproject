@@ -10,4 +10,6 @@ import java.util.List;
 public interface HomeServiceRepository extends JpaRepository<HomeService,Long> {
     List<HomeService> findByParentIsNull();
     List<HomeService> findByParent_ServiceId(Long parentId);
+
+    List<HomeService> findByParentId(Long parentId);
 }
