@@ -1,6 +1,5 @@
 package ir.maktab.shortcut.fianlproject.controller;
 
-import ir.maktab.shortcut.fianlproject.dtos.CustomerRequestDto;
 import ir.maktab.shortcut.fianlproject.service.CustomerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

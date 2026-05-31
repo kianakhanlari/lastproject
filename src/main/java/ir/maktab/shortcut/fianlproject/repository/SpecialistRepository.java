@@ -11,4 +11,7 @@ import java.util.List;
 @Repository
 public interface SpecialistRepository extends JpaRepository<Specialist,Long> {
     List<Specialist> findAllByAccountStatusIn(Collection<SpecialistStatus> statuses);
+
+    boolean existsByEmail(String email);
+
 }

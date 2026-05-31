@@ -14,5 +14,6 @@ public interface CustomerMapper {
 
     void updateEntityFromDto( CustomerRequestDto dto,
                              @MappingTarget Customer customer);
+    CustomerResponseDto toResponseDto(Customer customer);
 
 }

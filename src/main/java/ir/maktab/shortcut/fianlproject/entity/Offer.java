@@ -23,7 +23,7 @@ public class Offer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private BigDecimal priceOffer;
+    private BigDecimal proposedPrice;
     private LocalDateTime appointmentTime;
     @Column(columnDefinition = "interval", nullable = false)
     private Duration workDuration;

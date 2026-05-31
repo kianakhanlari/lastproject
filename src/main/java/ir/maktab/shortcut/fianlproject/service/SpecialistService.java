@@ -43,6 +43,7 @@ public class SpecialistService {
   /// register/update
 
     public void registerSpecialist(SpecialistRequestDto dto, String filePath) {
+
         Specialist specialist = specialistMapper.toEntity(dto);
         specialist.setStatus(SpecialistStatus.NEW);
         specialist.setProfileImagePath(filePath);

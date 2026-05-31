@@ -27,7 +27,7 @@ public class Order {
 
     private String description;
 
-    private BigDecimal priceOffer;
+    private BigDecimal proposedPrice;
 
     private LocalDateTime appointmentTime;
 

@@ -11,6 +11,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(
+        uniqueConstraints = @UniqueConstraint(columnNames = {"parent_id", "name_service"})
+)
 @Getter
 @Setter
 @AllArgsConstructor
@@ -21,16 +24,22 @@ public class HomeService {
     private Long  serviceId;
 
     private String nameService;
+
     private BigDecimal basePrice;
+
     private String description;
+
     @ManyToOne
     @JoinColumn(name = "parent_id")
     private HomeService parent;
+
     @OneToMany(mappedBy = "parent")
     private Set<HomeService> subServices = new HashSet<>();
+
     @OneToMany(mappedBy = "service")
     private Set<Specialist> specialistSets = new HashSet<>();
 
     @OneToMany(mappedBy = "service")
     private Set<Order> orders = new HashSet<>();
+
 }
