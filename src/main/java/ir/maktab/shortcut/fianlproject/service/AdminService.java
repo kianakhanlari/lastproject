@@ -8,6 +8,7 @@ import ir.maktab.shortcut.fianlproject.entity.HomeService;
 import ir.maktab.shortcut.fianlproject.entity.Specialist;
 import ir.maktab.shortcut.fianlproject.entity.enums.SpecialistStatus;
 import ir.maktab.shortcut.fianlproject.exception.DuplicateException;
+import ir.maktab.shortcut.fianlproject.exception.HomeServiceAlreadyExistsException;
 import ir.maktab.shortcut.fianlproject.mapper.HomeServiceMapper;
 import ir.maktab.shortcut.fianlproject.mapper.SpecialistMapper;
 import ir.maktab.shortcut.fianlproject.repository.HomeServiceRepository;
@@ -15,11 +16,12 @@ import ir.maktab.shortcut.fianlproject.repository.SpecialistRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
+@Service
+@Transactional(readOnly = true)
 public class AdminService{
     private final HomeServiceRepository homeServiceRepository;
     private final HomeServiceMapper homeServiceMapper;
@@ -32,7 +34,7 @@ public class AdminService{
         this.specialistRepository = specialistRepository;
         this.specialistMapper = specialistMapper;
     }
-
+    @Transactional
     public void createService(HomeServiceRequestDto dto) {
 
         HomeService parent = null;
@@ -44,14 +46,22 @@ public class AdminService{
                     ));
         }
 
+
+        if (homeServiceRepository.findByNameServiceIgnoreCase(dto.nameService()).isPresent()) {
+            throw new HomeServiceAlreadyExistsException(
+                    "HomeService with name '" + dto.nameService() + "' already exists"
+            );
+        }
         HomeService homeService = homeServiceMapper.toEntity(dto);
+        homeService.setNameService(dto.nameService());
         homeService.setParent(parent);
         homeServiceRepository.save(homeService);
     }
 
+   @Transactional
     public void updateService(Long serviceId, HomeServiceRequestDto dto) {
         HomeService homeService = homeServiceRepository.findById(serviceId)
-                .orElseThrow();
+                .orElseThrow(()->new EntityNotFoundException("there isnt HomeService With this id"));
         HomeService parent = null;
         if (dto.parentId() != null) {
             if (dto.parentId().equals(serviceId)) {
@@ -64,14 +74,17 @@ public class AdminService{
         homeServiceMapper.updateEntityFromDto(dto, homeService);
 
         homeService.setParent(parent);
+        homeService.setNameService(dto.nameService());
 
         homeServiceRepository.save(homeService);
     }
+    @Transactional
     public void deleteService(Long serviceId) {
-            HomeService homeService = homeServiceRepository.findById(serviceId)
+            homeServiceRepository.findById(serviceId)
                     .orElseThrow(() -> new EntityNotFoundException("HomeService not found with id: " + serviceId));
 
         homeServiceRepository.deleteById(serviceId);
+
     }
 
 
@@ -86,21 +99,37 @@ public class AdminService{
                 .map(homeServiceMapper::toResponseDto)
                 .toList();
     }
-
+   @Transactional
     public void addSpecialist(SpecialistRequestDto dto){
         if (specialistRepository.existsByEmail(dto.email())) {
-            throw new DuplicateException();
+            throw new DuplicateException("Email already exists");
         }
         Specialist specialist=specialistMapper.toEntity(dto);
         specialist.setStatus(SpecialistStatus.APPROVE);
         specialistRepository.save(specialist);
     }
-
+    @Transactional
     public void deleteSpecialist(Long specialistId) {
         Specialist specialist = specialistRepository.findById(specialistId)
                 .orElseThrow(() -> new EntityNotFoundException("Specialist not found with id: " + specialistId));
 
         specialistRepository.delete(specialist);
+    }
+    //رابطه بین متخصص و خدمت حذف کنه
+    @Transactional
+    public void removeServiceFromSpecialist(Long specialistId, Long serviceId){
+        Specialist specialist=specialistRepository.findById(specialistId)
+                .orElseThrow(()->new EntityNotFoundException("there isnot Specialist with this id"));
+        HomeService homeService=homeServiceRepository.findById(serviceId)
+                .orElseThrow(()->  new EntityNotFoundException("there isnot homeservice with this id "));
+
+        if (!specialist.getServices().contains(homeService)) {
+            throw new IllegalArgumentException(
+                    "This specialist is not assigned to the specified service");
+        }
+        homeService.getSpecialists().remove(specialist);
+        specialist.getServices().remove(homeService);
+
     }
 
     public Page<SpecialistResponseDto> getListWaitingAndNewSpecialists(Pageable pageable) {
@@ -110,17 +139,27 @@ public class AdminService{
                 .map(specialistMapper::toResponseDto);
     }
 
+   @Transactional
+    public void approveSpecialist(Long specialistId, List<Long> serviceIds) {
 
-    public void approveSpecialist(Long specialistId,Long serviceId){
         Specialist specialist = specialistRepository.findById(specialistId)
-                .orElseThrow(() -> new EntityNotFoundException("Specialist not found with id: " + specialistId));
+                .orElseThrow(() ->
+                        new EntityNotFoundException(
+                                "Specialist not found with id: " + specialistId));
 
-        HomeService homeService = homeServiceRepository.findById(serviceId)
-                .orElseThrow(() -> new EntityNotFoundException("HomeService not found with id: " + serviceId));
+        List<HomeService> services =
+                homeServiceRepository.findAllById(serviceIds);
 
-       specialist.setStatus(SpecialistStatus.APPROVE);
-       specialist.setService(homeService);
-       specialistRepository.save(specialist);
+        if (services.size() != serviceIds.size()) {
+            throw new EntityNotFoundException("One or more services not found");
+        }
+
+        specialist.setStatus(SpecialistStatus.APPROVE);
+
+        specialist.getServices().addAll(services);
+
+        specialistRepository.save(specialist);
     }
+
 
 }

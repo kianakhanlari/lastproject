@@ -5,12 +5,13 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-public record SpecialistRequestDto(
-        @NotBlank
+
+public record   SpecialistRequestDto(
+
+        @NotBlank(groups = ValidationGroups.OnCreate.class)
         String fullName,
 
-        @NotBlank(groups = ValidationGroups.OnUpdate.class)
-        Long id,
+        byte[]  photo,
 
         @NotBlank
         @Size(min = 8, message = "Password must be at least 8 characters")

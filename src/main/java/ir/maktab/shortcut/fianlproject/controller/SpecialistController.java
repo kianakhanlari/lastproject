@@ -1,27 +1,27 @@
 package ir.maktab.shortcut.fianlproject.controller;
 
+
+import ir.maktab.shortcut.fianlproject.dtos.OfferDto;
 import ir.maktab.shortcut.fianlproject.dtos.SpecialistRequestDto;
-import ir.maktab.shortcut.fianlproject.service.FileStorageService;
 import ir.maktab.shortcut.fianlproject.service.SpecialistService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
 @RestController
+@RequestMapping("/api/specialists")
 public class SpecialistController {
     private final SpecialistService specialistService;
-    private  final FileStorageService fileStorageService;
 
-    public SpecialistController(SpecialistService specialistService, FileStorageService fileStorageService) {
+
+    public SpecialistController(SpecialistService specialistService) {
         this.specialistService = specialistService;
-        this.fileStorageService = fileStorageService;
     }
 
 
-    @PostMapping(value = "/register/specialist", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  /*  @PostMapping( consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> registerSpecialist(
             @RequestPart("data") SpecialistRequestDto dto,
             @RequestPart("file") MultipartFile file) {
@@ -42,6 +42,37 @@ public class SpecialistController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error: " + e.getMessage());
         }
+    }*/
+
+    //بپرسم
+/*  @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  public ResponseEntity<Void> register(
+          @RequestPart("data") SpecialistRequestDto dto,
+          @RequestPart("file") MultipartFile file) throws IOException {
+
+      specialistService.registerSpecialist(dto, file.getBytes());
+
+      return ResponseEntity.ok().build();
+  }*/
+    //t
+    @PutMapping("/{specialistId}")
+    public ResponseEntity<Void> updateSpecialist(
+            @PathVariable Long specialistId,
+            @Validated @RequestBody SpecialistRequestDto dto
+    ) {
+        specialistService.updateSpecialistProfile(specialistId, dto);
+        return ResponseEntity.noContent().build();
+    }
+
+    //t
+    @PostMapping("/{specialistId}/orders/{orderId}/offers")
+    public ResponseEntity<Void> createOffer(
+            @PathVariable Long orderId,
+            @PathVariable Long specialistId,
+            @Validated @RequestBody OfferDto dto
+    ) {
+        specialistService.createOffer(orderId, specialistId, dto);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
 }

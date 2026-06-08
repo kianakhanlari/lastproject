@@ -7,8 +7,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Setter
@@ -19,11 +21,11 @@ public class Rate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Min(1) @Max(5)
+
     private int score;
 
     private String comment;
-
+    @CreatedDate
     private LocalDateTime createdAt;
 
     @OneToOne

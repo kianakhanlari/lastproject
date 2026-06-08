@@ -10,7 +10,7 @@ public record HomeServiceRequestDto(
 
         @NotBlank(message = "Service name must not be blank")
 
-        String name,
+        String nameService      ,
 
         @NotNull(message = "Base price is required")
         @DecimalMin(value = "0.0", inclusive = false, message = "Base price must be greater than zero")

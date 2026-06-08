@@ -11,5 +11,4 @@ import java.util.List;
 public interface OrderRepository extends JpaRepository<Order,Long> {
     List<Order> findAllByServiceId(Long serviceId);
 
-    boolean existsBySpecialist_IdAndStatus(Long id, OrderStatus orderStatus);
 }

@@ -21,8 +21,8 @@ import java.util.Set;
 public class HomeService {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long  serviceId;
-
+    private Long  id;
+    @Column(unique = true,name = "name_service")
     private String nameService;
 
     private BigDecimal basePrice;
@@ -36,8 +36,8 @@ public class HomeService {
     @OneToMany(mappedBy = "parent")
     private Set<HomeService> subServices = new HashSet<>();
 
-    @OneToMany(mappedBy = "service")
-    private Set<Specialist> specialistSets = new HashSet<>();
+    @ManyToMany(mappedBy = "services")
+    private Set<Specialist> specialists = new HashSet<>();
 
     @OneToMany(mappedBy = "service")
     private Set<Order> orders = new HashSet<>();

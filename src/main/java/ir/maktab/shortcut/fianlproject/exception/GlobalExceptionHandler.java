@@ -38,5 +38,17 @@ public class GlobalExceptionHandler {
         ApiError error = new ApiError("INVALID_ORDER", e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
+    @ExceptionHandler(HomeServiceAlreadyExistsException.class)
+    public ResponseEntity<ApiError> handleHomeServiceAlreadyExists(
+            HomeServiceAlreadyExistsException ex) {
 
-}
+        ApiError error = new ApiError(
+                "HOME_SERVICE_ALREADY_EXISTS",
+                ex.getMessage()
+        );
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+
+    }

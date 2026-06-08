@@ -11,4 +11,6 @@ import java.util.List;
 public interface OrderMapper {
     Order toEntity(OrderRequestDto orderRequestDto);
     List<OrderResponseDto> toListOrder(List<Order> listOrder);
+    OrderResponseDto toDto(Order order);
+
 }

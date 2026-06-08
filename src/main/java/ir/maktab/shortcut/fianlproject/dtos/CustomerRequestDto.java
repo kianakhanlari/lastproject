@@ -5,12 +5,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-public record CustomerRequestDto(
+public record   CustomerRequestDto(
         @NotBlank
         String fullName,
 
-        @NotBlank(groups = ValidationGroups.OnUpdate.class)
-        Long id,
+    /*    @NotBlank(groups = ValidationGroups.OnUpdate.class)
+        Long id,*/
 
         @NotBlank
         @Size(min = 8, message = "Password must be at least 8 characters")

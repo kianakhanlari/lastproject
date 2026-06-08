@@ -1,7 +1,7 @@
 package ir.maktab.shortcut.fianlproject.exception;
 
 public class InvalidOrderException extends RuntimeException  {
-    public InvalidOrderException() {
+    public  InvalidOrderException() {
         super("Proposed price cannot be less than base price");
     }
 }

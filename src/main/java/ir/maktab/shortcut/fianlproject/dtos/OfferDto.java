@@ -6,9 +6,10 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDateTime;
 
-public record OfferRequestDto(
+public record OfferDto(
         @NotNull
         @PositiveOrZero
          BigDecimal proposedPrice,
@@ -18,6 +19,7 @@ public record OfferRequestDto(
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         LocalDateTime startWorkTime,
 
-        Integer durationInHours
+       Duration durationInHours
+
 ) {
 }

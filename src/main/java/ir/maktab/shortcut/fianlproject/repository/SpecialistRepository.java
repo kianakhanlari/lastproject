@@ -15,4 +15,6 @@ public interface SpecialistRepository extends JpaRepository<Specialist, Long> {
 
     boolean existsByEmail(String email);
 
+
+    Specialist findByEmail(String email);
 }

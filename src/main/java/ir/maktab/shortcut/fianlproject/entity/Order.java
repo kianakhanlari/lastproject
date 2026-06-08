@@ -6,11 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.math.BigDecimal;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -24,6 +22,7 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    //status
 
     private String description;
 
@@ -42,8 +41,7 @@ public class Order {
     @ManyToOne
     private Customer customer;
 
-    @OneToOne
-    private Rate rate;
+
 
     @OneToMany(mappedBy = "order")
     private Set<Offer> offers;

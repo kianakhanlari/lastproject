@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,17 +21,23 @@ import java.util.Set;
 public class Specialist extends Person {
 
 
-    @ManyToOne
-    private HomeService service;
-    /*  @Lob
-      @Column(columnDefinition = "BYTEA")
-      private byte[] profileImage;*/
-    private String profileImagePath;
-    private SpecialistStatus Status;
+    @ManyToMany
+    @JoinTable(
+            name = "specialist_service",
+            joinColumns = @JoinColumn(name = "specialist_id"),
+            inverseJoinColumns = @JoinColumn(name = "service_id")
+    )
+    private Set<HomeService> services = new HashSet<>();
+     // @Lob
+      @Column(name = "profile_image", columnDefinition = "bytea")
+      private byte[] profileImage;
+
+   @Enumerated(EnumType.STRING)
+    private SpecialistStatus status;
     @OneToOne
     private Wallet wallet;
-    @OneToMany
-    private Set<Offer> offer = new HashSet<>();
     @OneToMany(mappedBy = "specialist")
-    private List<Offer> offers;
+    private List<Offer> offers = new ArrayList<>();
+    @OneToOne
+    private Rate rate;
 }
